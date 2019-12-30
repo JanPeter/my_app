@@ -1,0 +1,31 @@
+version: "3"
+
+networks:
+  internal:
+    external: false
+
+services:
+  app:
+    image: my_app:0.1.0
+    build:
+      context: .
+    environment:
+      - SECRET_KEY_BASE=${SECRET_KEY_BASE}
+      - DATABASE_DB=${DATABASE_DB}
+      - DATABASE_HOST=db
+    ports:
+      - 4000:4000
+    networks:
+      - internal
+    depends_on:
+      - db
+
+  db:
+    image: postgres:9.6
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=${DATABASE_DB}
+    networks:
+      - internal
